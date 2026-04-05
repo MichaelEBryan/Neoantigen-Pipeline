@@ -1,0 +1,64 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* Oxford Cancer Vaccine Design color system.
+       Based on Oxford dark navy (#012640) as the primary brand color.
+       Light mode only for v0.1. */
+
+    --background: 210 33% 98%;
+    --foreground: 205 97% 13%;
+
+    /* Primary: Oxford dark navy */
+    --primary: 205 97% 13%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary: lighter navy for hovers and secondary actions */
+    --secondary: 205 81% 21%;
+    --secondary-foreground: 0 0% 100%;
+
+    /* Accent: mid-blue for interactive highlights */
+    --accent: 203 64% 28%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Surfaces and muted text */
+    --muted: 210 20% 96%;
+    --muted-foreground: 216 26% 39%;
+
+    /* Borders: oxford wash blue */
+    --border: 207 51% 89%;
+
+    /* Focus ring */
+    --ring: 205 97% 13%;
+
+    /* Sidebar: dark navy */
+    --sidebar: 205 97% 13%;
+    --sidebar-foreground: 0 0% 100%;
+    --sidebar-muted: 205 81% 21%;
+
+    /* Status */
+    --success: 152 60% 38%;
+    --warning: 38 92% 50%;
+    --destructive: 0 72% 51%;
+
+    /* Card surfaces */
+    --card: 0 0% 100%;
+    --card-foreground: 205 97% 13%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-semibold text-foreground;
+  }
+}

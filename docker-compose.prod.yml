@@ -1,0 +1,73 @@
+# Production overrides -- use with:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+
+services:
+  nginx:
+    image: nginx:1.25-alpine
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./deploy/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - certbot-webroot:/var/www/certbot:ro
+      - certbot-certs:/etc/letsencrypt:ro
+    depends_on:
+      - backend
+      - frontend
+    restart: unless-stopped
+
+  # Certbot sidecar -- run manually: docker compose run certbot
+  certbot:
+    image: certbot/certbot
+    volumes:
+      - certbot-webroot:/var/www/certbot
+      - certbot-certs:/etc/letsencrypt
+    entrypoint: ""
+    command: >
+      certbot certonly --webroot -w /var/www/certbot
+      -d cancervaccinesupercompute.co.uk
+      -d www.cancervaccinesupercompute.co.uk
+      --email michael@serova.bio
+      --agree-tos --no-eff-email
+
+  backend:
+    ports: []  # Remove direct 8000 exposure; nginx handles it
+    environment:
+      DATABASE_URL: postgresql+asyncpg://cvdash:${DB_PASSWORD}@db:5432/cvdash
+      SECRET_KEY: ${SECRET_KEY}
+      COMPUTE_BACKEND: ${COMPUTE_BACKEND:-gcp-batch}
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID:-}
+      GCP_REGION: ${GCP_REGION:-europe-west2}
+      GCP_PIPELINE_BUCKET: ${GCP_PIPELINE_BUCKET:-}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
+      GCP_MACHINE_TYPE: ${GCP_MACHINE_TYPE:-n2-standard-16}
+      LOG_LEVEL: ${LOG_LEVEL:-INFO}
+    volumes:
+      - uploads:/app/uploads
+      - ./secrets:/app/secrets:ro
+
+  celery_worker:
+    environment:
+      DATABASE_URL: postgresql+asyncpg://cvdash:${DB_PASSWORD}@db:5432/cvdash
+      SECRET_KEY: ${SECRET_KEY}
+      COMPUTE_BACKEND: ${COMPUTE_BACKEND:-gcp-batch}
+      GCP_PROJECT_ID: ${GCP_PROJECT_ID:-}
+      GCP_REGION: ${GCP_REGION:-europe-west2}
+      GCP_PIPELINE_BUCKET: ${GCP_PIPELINE_BUCKET:-}
+      GOOGLE_APPLICATION_CREDENTIALS: ${GOOGLE_APPLICATION_CREDENTIALS:-}
+      GCP_MACHINE_TYPE: ${GCP_MACHINE_TYPE:-n2-standard-16}
+    volumes:
+      - uploads:/app/uploads
+      - ./secrets:/app/secrets:ro
+
+  frontend:
+    ports: []  # Remove direct 3000 exposure; nginx handles it
+    environment:
+      BACKEND_INTERNAL_URL: http://backend:8000
+      NEXT_PUBLIC_API_URL: ${NEXT_PUBLIC_API_URL}
+      NEXTAUTH_URL: ${NEXTAUTH_URL}
+      NEXTAUTH_SECRET: ${NEXTAUTH_SECRET}
+
+volumes:
+  certbot-webroot:
+  certbot-certs:

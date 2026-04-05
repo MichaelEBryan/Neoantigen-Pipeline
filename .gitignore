@@ -1,0 +1,95 @@
+# Environment and secrets
+.env
+.env.local
+.env.*.local
+*.pem
+secrets/
+*.json
+!package.json
+!package-lock.json
+!tsconfig.json
+!next.config.json
+!postcss.config.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+.eggs/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Node / Next.js
+node_modules/
+.next/
+out/
+.pnp
+.pnp.js
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+*.tmp
+
+# Docker
+docker-compose.override.yml
+
+# Preview / draft files (not part of the app)
+mockups/
+*-preview*.html
+ui-preview*.html
+*-email-draft*
+*-draft*
+
+# Uploads and data
+uploads/
+*.bam
+*.bam.bai
+*.fastq
+*.fastq.gz
+*.vcf
+*.vcf.gz
+*.vcf.gz.tbi
+*.fa
+*.fa.fai
+*.dict
+*.sif
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Generated session/planning docs (not part of the app)
+CONTEXT.md
+SESSION_LOG.md
+PLAN.md
+TASKS.md
+IMPLEMENTATION.md
+IMPROVEMENT_PLAN.md
+GCP_SETUP.md
+VCF_PARSER_IMPROVEMENTS.md
+backend/AUTH_BUILD.md
+backend/AUTH_IMPLEMENTATION_SUMMARY.md
