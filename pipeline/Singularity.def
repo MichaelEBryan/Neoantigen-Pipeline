@@ -1,0 +1,32 @@
+# Singularity definition for Isambard HPC.
+#
+# Converts the Docker image to a Singularity .sif file.
+# Isambard requires Singularity containers (no Docker daemon on compute nodes).
+#
+# Build on a machine with sudo or fakeroot:
+#   singularity build cvdash-pipeline.sif Singularity.def
+#
+# Or convert from the Docker image:
+#   singularity build cvdash-pipeline.sif docker://europe-west2-docker.pkg.dev/{PROJECT}/cvdash/pipeline:latest
+#
+# Copy to Isambard:
+#   scp cvdash-pipeline.sif login.isambard.ac.uk:/projects/cvdash/containers/
+
+Bootstrap: docker
+From: cvdash-pipeline:latest
+
+%labels
+    Author Oxford CVDash Team
+    Version 1.0
+    Description Variant calling pipeline for CVDash
+
+%environment
+    export PATH="/opt/tools/bin:/opt/nextflow:/opt/gatk:${PATH}"
+    export JAVA_HOME="/usr/lib/jvm/java-17-openjdk-amd64"
+
+%runscript
+    exec /opt/nextflow/nextflow "$@"
+
+%help
+    CVDash variant calling pipeline container.
+    Run with: singularity run cvdash-pipeline.sif run /pipeline/main.nf [args]
